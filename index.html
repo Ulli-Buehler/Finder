@@ -24,6 +24,14 @@ button{border:none;background:var(--brand);color:#fff;padding:12px 14px;border-r
 .secondary{background:#e9eefc;color:#1d4ed8}
 .top-actions{display:flex;gap:10px;flex-wrap:wrap}
 .small{font-size:13px;color:var(--muted)}
+.result-head{display:flex;align-items:center;gap:12px}
+.result-main{flex:1;min-width:0}
+.edit-btn{background:#eef2ff;color:#1d4ed8;padding:10px 12px;min-width:44px}
+.edit-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.edit-input{flex:1;min-width:180px;font-size:18px;padding:11px 12px;border-radius:12px;border:1px solid var(--line)}
+.save-btn{background:#15803d}
+.cancel-btn{background:#e5e7eb;color:#374151}
+.status{position:sticky;top:8px;z-index:5;display:none;margin-bottom:12px;padding:11px 14px;border-radius:12px;background:#dcfce7;color:#166534;font-weight:700}
 </style>
 </head>
 <body>
@@ -41,18 +49,123 @@ button{border:none;background:var(--brand);color:#fff;padding:12px 14px;border-r
     </div>
   </div>
 
+  <div id="status" class="status"></div>
   <div id="results"></div>
   <div class="small">Tipp: Diese Datei muss auf GitHub Pages als index.html im Hauptordner liegen.</div>
 </div>
 
 <script>
 const tenants = [{room:'01',name:'Kerbach',note:''},{room:'02',name:'Pätzold',note:''},{room:'03',name:'Tröndle',note:''},{room:'04',name:'Nandakumaran',note:''},{room:'05',name:'Holzhäuer',note:''},{room:'06',name:'Geranmayeh',note:''},{room:'07',name:'Perreira Baptista',note:''},{room:'08',name:'Onyebuchi',note:''},{room:'09',name:'Bronner',note:''},{room:'10',name:'Lang',note:''},{room:'11',name:'Tufan',note:''},{room:'12',name:'Gupta',note:''},{room:'13',name:'Aydin',note:''},{room:'14',name:'R. Schröder',note:''},{room:'15',name:'Seidel',note:''},{room:'16',name:'Klingler',note:''},{room:'17',name:'Nedvedicky',note:''},{room:'18',name:'Arunbabu',note:''},{room:'19',name:'Yelanchyk',note:''},{room:'20',name:'Walendzik',note:''},{room:'21',name:'Maximow',note:''},{room:'22',name:'Krawinkel',note:''},{room:'23',name:'Gyurkan',note:''},{room:'24',name:'Hatzenbühler',note:''},{room:'25',name:'Wirzberger',note:''},{room:'26',name:'Sun',note:''},{room:'27',name:'Xinxin',note:''},{room:'28',name:'Fabricius',note:''},{room:'29',name:'Napp',note:''},{room:'30',name:'A. Bauer',note:''},{room:'31',name:'Geymeier',note:''},{room:'32',name:'Chen',note:''},{room:'33',name:'Zinnanti',note:''},{room:'34',name:'Song',note:''},{room:'35',name:'Hoch',note:''},{room:'36',name:'Pratik Raut',note:''},{room:'37',name:'Yilmaz Duran',note:''},{room:'38',name:'Y. Luo',note:''},{room:'39',name:'Zhu',note:''},{room:'40',name:'Görgen',note:''},{room:'41',name:'Etheah',note:''},{room:'42',name:'Dai',note:''},{room:'43',name:'Oberem',note:''},{room:'44',name:'Sedlmeier',note:''},{room:'45',name:'C. Liu',note:''},{room:'46',name:'Mircea',note:''},{room:'47',name:'Maier',note:''},{room:'48',name:'Talab',note:''},{room:'49',name:'Werner',note:''},{room:'50',name:'Treptow',note:''},{room:'51',name:'Weisser',note:''},{room:'52',name:'Özcelik',note:''},{room:'53',name:'Yuer',note:''},{room:'54',name:'Beydas & Durmahay',note:''},{room:'55',name:'Viet',note:''},{room:'56',name:'Yixuan Liu',note:''},{room:'57',name:'Baykal',note:''},{room:'58',name:'Khandaker',note:''},{room:'59',name:'Klier',note:''},{room:'60',name:'Kott',note:''},{room:'61',name:'Wang',note:''},{room:'62',name:'Uwumukiza',note:''},{room:'63',name:'Walcher',note:''},{room:'64',name:'Y. Sun',note:''},{room:'65',name:'Assanov',note:''},{room:'66',name:'Rezapour',note:''},{room:'67',name:'Geiger',note:''},{room:'68',name:'Ziebolz',note:''},{room:'69',name:'Arsamaskin',note:''},{room:'70',name:'Ayasse',note:''},{room:'71',name:'Chrysostomidou',note:''},{room:'72',name:'Dietrich',note:''},{room:'73',name:'T. Li',note:''},{room:'74',name:'Matta',note:''},{room:'75',name:'Dreioecker',note:''},{room:'76',name:'Bozkurt',note:''},{room:'77',name:'Martin',note:''},{room:'78',name:'BW Partner',note:''},{room:'79',name:'BW Partner',note:''},{room:'80',name:'W. Liu',note:''},{room:'81',name:'Elzanaty',note:''},{room:'82',name:'Wittrock',note:''},{room:'83',name:'Tonke',note:''},{room:'84',name:'Sintara',note:''},{room:'85',name:'Han',note:''},{room:'86',name:'Twisselmann',note:''},{room:'87',name:'Yigit',note:''},{room:'88',name:'E. Schröder',note:''},{room:'89',name:'Liu, Yiran',note:''},{room:'90',name:'BW Partner',note:''},{room:'91',name:'Fix',note:''},{room:'92',name:'Weiss',note:''},{room:'93',name:'Knorr',note:''},{room:'94',name:'Metzger',note:''},{room:'95',name:'Wilmer',note:''},{room:'96',name:'Hankh',note:''},{room:'97',name:'Haifan Zhong',note:''},{room:'98',name:'Raster',note:''},{room:'99',name:'Prochnow',note:''},{room:'100',name:'Ünal',note:''},{room:'101',name:'Fischer',note:''},{room:'102',name:'Knoll',note:''},{room:'103',name:'Wang',note:''},{room:'104',name:'Geike',note:''},{room:'105',name:'Stephan',note:''},{room:'106',name:'Gerdts',note:''},{room:'107',name:'BW Partner',note:''},{room:'108',name:'Siuizca',note:''},{room:'109',name:'Lahl',note:''},{room:'110',name:'Yunusa',note:''},{room:'111',name:'H. Chen',note:''},{room:'112',name:'D. Liu',note:''},{room:'113',name:'Zöller',note:''},{room:'114',name:'Hüllein',note:''},{room:'115',name:'Ahmed',note:''},{room:'116',name:'Y. Cao',note:''},{room:'117',name:'Ince',note:''},{room:'118',name:'Güney',note:''},{room:'119',name:'Liu',note:''},{room:'120',name:'Siddiqui',note:''},{room:'121',name:'Zhang',note:''},{room:'122',name:'Liu',note:''},{room:'123',name:'Ukandu',note:''},{room:'124',name:'Salah',note:''},{room:'125',name:'Pasaoglu, Gürbüz',note:''},{room:'126',name:'Gökeler',note:''}];
-const q=document.getElementById('q'),results=document.getElementById('results'),count=document.getElementById('count');
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
-function copyText(text){navigator.clipboard?.writeText(text).catch(()=>{}); alert('Kopiert: '+text)}
-function shareText(text){if(navigator.share){navigator.share({text})} else {copyText(text)}}
-function render(){const term=q.value.trim().toLowerCase(); const filtered=term?tenants.filter(t=>t.name.toLowerCase().includes(term)||t.room.includes(term)||t.note.toLowerCase().includes(term)):tenants; count.textContent=filtered.length+' Treffer'; results.innerHTML=filtered.map(t=>`<div class="card result"><div class="name">${escapeHtml(t.name)}</div><div class="room"><strong>${escapeHtml(t.room)}</strong></div>${t.note?`<div class="note">${escapeHtml(t.note)}</div>`:''}<div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap"><button onclick="copyText('${escapeHtml(t.name)} = ${escapeHtml(t.room)}')">Kopieren</button><button class="secondary" onclick="shareText('${escapeHtml(t.name)} = ${escapeHtml(t.room)}')">Teilen</button></div></div>`).join('')||'<div class="card">Kein Treffer gefunden.</div>'}
-q.addEventListener('input',render); document.getElementById('clear').onclick=()=>{q.value=''; render(); q.focus()}; render();
+const STORAGE_KEY='finder-tenants-v1';
+let data=loadTenants();
+let editingRoom=null;
+const q=document.getElementById('q');
+const results=document.getElementById('results');
+const count=document.getElementById('count');
+const statusBox=document.getElementById('status');
+function loadTenants(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(!Array.isArray(saved)) return tenants.map(t=>({...t}));
+    return tenants.map(base=>{
+      const changed=saved.find(item=>item.room===base.room);
+      return changed?{...base,name:String(changed.name??base.name)}:{...base};
+    });
+  }catch{
+    return tenants.map(t=>({...t}));
+  }
+}
+function saveTenants(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(data.map(({room,name})=>({room,name}))));
+}
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function showStatus(text){
+  statusBox.textContent=text;
+  statusBox.style.display='block';
+  clearTimeout(showStatus.timer);
+  showStatus.timer=setTimeout(()=>statusBox.style.display='none',2200);
+}
+async function copyText(text){
+  try{await navigator.clipboard.writeText(text)}catch{}
+  alert('Kopiert: '+text);
+}
+function shareText(text){
+  if(navigator.share) navigator.share({text}); else copyText(text);
+}
+function filteredData(){
+  const term=q.value.trim().toLowerCase();
+  return term?data.filter(t=>t.name.toLowerCase().includes(term)||t.room.includes(term)):data;
+}
+function render(){
+  const filtered=filteredData();
+  count.textContent=filtered.length+' Treffer';
+  results.innerHTML=filtered.map(t=>{
+    if(editingRoom===t.room){
+      return `<div class="card result" data-room="${escapeHtml(t.room)}">
+        <div class="room"><strong>${escapeHtml(t.room)}</strong></div>
+        <div class="edit-row">
+          <input class="edit-input" data-edit-input value="${escapeHtml(t.name)}" aria-label="Name für Wohnung ${escapeHtml(t.room)}">
+          <button class="save-btn" data-action="save">✓</button>
+          <button class="cancel-btn" data-action="cancel">✕</button>
+        </div>
+      </div>`;
+    }
+    const text=`${t.name} = ${t.room}`;
+    return `<div class="card result" data-room="${escapeHtml(t.room)}">
+      <div class="result-head">
+        <div class="result-main">
+          <div class="name">${escapeHtml(t.name)}</div>
+          <div class="room"><strong>${escapeHtml(t.room)}</strong></div>
+        </div>
+        <button class="edit-btn" data-action="edit" aria-label="${escapeHtml(t.name)} bearbeiten">✏️</button>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+        <button data-action="copy" data-text="${escapeHtml(text)}">Kopieren</button>
+        <button class="secondary" data-action="share" data-text="${escapeHtml(text)}">Teilen</button>
+      </div>
+    </div>`;
+  }).join('')||'<div class="card">Kein Treffer gefunden.</div>';
+  if(editingRoom){
+    requestAnimationFrame(()=>{
+      const input=results.querySelector('[data-edit-input]');
+      if(input){input.focus();input.select();}
+    });
+  }
+}
+function finishSave(card){
+  const input=card.querySelector('[data-edit-input]');
+  const name=input.value.trim();
+  const room=card.dataset.room;
+  const item=data.find(t=>t.room===room);
+  if(!item) return;
+  item.name=name;
+  saveTenants();
+  editingRoom=null;
+  render();
+  showStatus('✓ Änderung gespeichert');
+}
+results.addEventListener('click',event=>{
+  const button=event.target.closest('button[data-action]');
+  if(!button) return;
+  const card=button.closest('[data-room]');
+  const action=button.dataset.action;
+  if(action==='edit'){editingRoom=card.dataset.room;render();}
+  if(action==='save') finishSave(card);
+  if(action==='cancel'){editingRoom=null;render();}
+  if(action==='copy') copyText(button.dataset.text);
+  if(action==='share') shareText(button.dataset.text);
+});
+results.addEventListener('keydown',event=>{
+  if(!event.target.matches('[data-edit-input]')) return;
+  const card=event.target.closest('[data-room]');
+  if(event.key==='Enter'){event.preventDefault();finishSave(card);}
+  if(event.key==='Escape'){editingRoom=null;render();}
+});
+q.addEventListener('input',()=>{editingRoom=null;render();});
+document.getElementById('clear').onclick=()=>{q.value='';editingRoom=null;render();q.focus();};
+render();
 </script>
 </body>
 </html>
